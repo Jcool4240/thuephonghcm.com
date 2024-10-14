@@ -1,0 +1,28 @@
+﻿/* Custom styles */
+.navbar {
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+.footer {
+    background-color: #f8f9fa;
+    padding: 1rem 0;
+}

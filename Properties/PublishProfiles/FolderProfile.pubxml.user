@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\ASUS\Desktop\deploy_Khoa</_PublishTargetUrl>
+    <History>True|2024-09-16T09:48:05.7113631Z;</History>
+    <LastFailureDetails />
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Source=202.92.7.204\MSSQLSERVER2022%3bInitial Catalog=JcoolDevRoom%3bIntegrated Security=False%3bUser ID=JcoolDevRoom%3bPassword=Locpro22##%3bMultipleActiveResultSets=True%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,200 @@
+﻿@using System.Text.RegularExpressions
+@using System.Globalization
+
+@{
+    var currentUrl = Context.Request.Path.ToString().ToLower();
+    var collaboratorCodeMatch = Regex.Match(currentUrl, @"/([^/]+)(?:/(?:home|rooms|about))?");
+    var brandName = "thuephonghcm.com";
+    var isCollaboratorPage = false;
+
+    if (collaboratorCodeMatch.Success)
+    {
+        var collaboratorCode = collaboratorCodeMatch.Groups[1].Value;
+        if (collaboratorCode != "cong-tac-vien-cho-thue-phong" &&
+            collaboratorCode != "tat-ca-phong-cho-thue" &&
+            collaboratorCode != "gioi-thieu-ve-thue-phong-hcm" &&
+            collaboratorCode != "lien-he-thue-phong-hcm" &&
+            !collaboratorCode.StartsWith("cong-tac-vien-phong-tro-hcm"))
+        {
+            brandName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(collaboratorCode.Replace("-", " ")).Replace(" ", "");
+            isCollaboratorPage = true;
+        }
+    }
+
+    var pageTitle = ViewData["Title"] as string;
+    var currentController = ViewContext.RouteData.Values["controller"].ToString();
+    var currentAction = ViewContext.RouteData.Values["action"].ToString();
+
+    var titlePrefix = "";
+    switch (currentAction.ToLower())
+    {
+        case "index":
+        case "home":
+            titlePrefix = "Trang chủ";
+            break;
+        case "rooms":
+            titlePrefix = "Danh sách phòng";
+            break;
+        case "about":
+            titlePrefix = "Giới thiệu";
+            break;
+        default:
+            titlePrefix = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(currentAction.Replace("-", " "));
+            break;
+    }
+
+    var fullTitle = string.IsNullOrEmpty(pageTitle)
+        ? $"{titlePrefix} - {brandName}"
+        : $"{pageTitle} - {brandName}";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@fullTitle</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/JcoolDevRoom.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/lib/select2-bootstrap4.min.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    @RenderSection("Styles", required: false)
+    @RenderSection("MetaTags", required: false)
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="@(isCollaboratorPage ? $"/{collaboratorCodeMatch.Groups[1].Value}" : "/cong-tac-vien-cho-thue-phong")">@brandName</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @{
+                            var isManagerRoute = Context.Request.Path.StartsWithSegments("/" + Context.Session.GetString("CollaboratorCode") + "/manager");
+                        }
+                        @if (isManagerRoute)
+                        {
+                            <partial name="_ManagerNavigationPartial" />
+                        }
+                        else
+                        {
+                            <partial name="_NavigationPartial" />
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @if (currentController == "Home")
+    {
+        <partial name="_FooterHome" />
+    }
+    else if (currentController == "Collaborator")
+    {
+        <partial name="_FooterCollaborator" />
+    }
+    else if (currentController == "Manager")
+    {
+        <partial name="_FooterManager" />
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function getToken() {
+            return localStorage.getItem('jwtToken');
+        }
+
+        function setToken(token) {
+            localStorage.setItem('jwtToken', token);
+        }
+
+        function removeToken() {
+            localStorage.removeItem('jwtToken');
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                var token = localStorage.getItem('jwtToken');
+                if (token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                }
+            }
+        });
+
+        $(document).ready(function () {
+            var token = localStorage.getItem('jwtToken');
+            if (token) {
+                $('a:not([href^="#"])').each(function () {
+                    var href = $(this).attr('href');
+                    if (href && !href.startsWith('http') && !href.startsWith('//')) {
+                        $(this).attr('href', href + (href.indexOf('?') === -1 ? '?' : '&') + 'token=' + token);
+                    }
+                });
+            }
+        });
+
+        $(document).ajaxComplete(function (event, xhr, settings) {
+            var newToken = xhr.getResponseHeader('X-New-Token');
+            if (newToken) {
+                setToken(newToken);
+            }
+        });
+
+        $(document).ajaxError(function (event, xhr, settings) {
+            if (xhr.status === 401) {
+                Swal.fire({
+                    title: 'Phiên làm việc đã hết hạn',
+                    text: 'Vui lòng đăng nhập lại.',
+                    icon: 'warning',
+                    confirmButtonText: 'Đăng nhập lại'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        removeToken();
+                        window.location.href = '/cong-tac-vien-phong-tro-hcm/login';
+                    }
+                });
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('collaboratorCode');
+
+            $.ajax({
+                url: '/cong-tac-vien-phong-tro-hcm/logout',
+                type: 'POST',
+                data: { "__RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                success: function () {
+                    window.location.href = '/cong-tac-vien-cho-thue-phong';
+                }
+            });
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

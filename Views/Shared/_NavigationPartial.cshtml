@@ -1,0 +1,54 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    var collaboratorCode = Context.Session.GetString("CollaboratorCode");
+    var currentCollaboratorCode = ViewContext.RouteData.Values["collaboratorCode"]?.ToString();
+}
+
+@if (!string.IsNullOrEmpty(collaboratorCode))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Manager" asp-action="Home" asp-route-collaboratorCode="@collaboratorCode">Trang chủ</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Manager" asp-action="Districts" asp-route-collaboratorCode="@collaboratorCode">Khu vực</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Manager" asp-action="Rooms" asp-route-collaboratorCode="@collaboratorCode">Phòng</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Manager" asp-action="About" asp-route-collaboratorCode="@collaboratorCode">Về tôi</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="javascript:void(0);" onclick="logout()">Đăng xuất</a>
+    </li>
+}
+else if (!string.IsNullOrEmpty(currentCollaboratorCode))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Collaborator" asp-action="Home" asp-route-collaboratorCode="@currentCollaboratorCode">Trang chủ</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Collaborator" asp-action="Rooms" asp-route-collaboratorCode="@currentCollaboratorCode">Căn phòng</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Collaborator" asp-action="About" asp-route-collaboratorCode="@currentCollaboratorCode">Về tôi</a>
+    </li>
+}
+else
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="/cong-tac-vien-cho-thue-phong">Trang chủ</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="/tat-ca-phong-cho-thue">Tất cả phòng</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="/gioi-thieu-ve-thue-phong-hcm">Về chúng tôi</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="/lien-he-thue-phong-hcm">Liên hệ</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="/cong-tac-vien-phong-tro-hcm/login">Đăng nhập</a>
+    </li>
+}

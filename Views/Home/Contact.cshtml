@@ -1,0 +1,192 @@
+﻿@{
+    ViewData["Title"] = "Liên hệ - thuephonghcm.com";
+}
+
+<style>
+    .contact-section {
+        padding: 80px 0;
+        background-color: #f8f9fa;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        color: #4e54c8;
+        margin-bottom: 50px;
+        text-align: center;
+        position: relative;
+    }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #4e54c8;
+            margin: 20px auto 0;
+        }
+
+    .contact-card {
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .contact-info {
+        padding: 40px;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        color: #fff;
+    }
+
+    .contact-form {
+        padding: 40px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .contact-icon {
+        font-size: 1.8rem;
+        margin-right: 15px;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .contact-text {
+        font-size: 1.1rem;
+    }
+
+        .contact-text a {
+            color: #fff;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+            .contact-text a:hover {
+                opacity: 0.8;
+            }
+
+    .zalo-qr {
+        max-width: 150px;
+        margin: 20px auto;
+        display: block;
+        border: 5px solid #fff;
+        border-radius: 10px;
+    }
+
+    .form-control {
+        margin-bottom: 20px;
+        border: none;
+        border-bottom: 2px solid #e0e0e0;
+        border-radius: 0;
+        padding: 10px 0;
+        transition: border-color 0.3s;
+    }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #4e54c8;
+        }
+
+    .btn-submit {
+        background-color: #4e54c8;
+        color: #fff;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+        .btn-submit:hover {
+            background-color: #3a3f9f;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+</style>
+
+<div class="contact-section">
+    <div class="container">
+        <h1 class="section-title">Liên hệ với chúng tôi</h1>
+        <div class="contact-card">
+            <div class="row no-gutters">
+                <div class="col-md-5">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <a href="mailto:loc222002@gmail.com">loc222002@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fab fa-facebook"></i>
+                            </div>
+                            <div class="contact-text">
+                                <a href="https://www.facebook.com/loc.Jcool" target="_blank">Facebook</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <div class="contact-text">Zalo</div>
+                        </div>
+                        <img src="~/images/qr_zalo_jcool.jpg" alt="Zalo QR Code" class="zalo-qr">
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="contact-form">
+                        <h2>Gửi tin nhắn cho chúng tôi</h2>
+                        <form id="contactForm">
+                            <input type="text" class="form-control" id="userName" placeholder="Tên của bạn" required>
+                            <input type="email" class="form-control" id="email" placeholder="Email của bạn" required>
+                            <input type="tel" class="form-control" id="phone" placeholder="Số điện thoại của bạn" required>
+                            <textarea class="form-control" id="content" rows="4" placeholder="Nội dung liên hệ" required></textarea>
+                            <button type="submit" class="btn-submit">Gửi tin nhắn</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const contactMessage = {
+                userName: document.getElementById('userName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                content: document.getElementById('content').value,
+                collaborator_code: "jcool"
+            };
+
+            axios.post('https://66acec7ef009b9d5c733da23.mockapi.io/mailbox', contactMessage)
+                .then(function (response) {
+                    alert('Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất có thể!');
+                    document.getElementById('contactForm').reset();
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi gửi tin nhắn. Vui lòng thử lại sau.');
+                });
+        });
+    </script>
+}

@@ -1,0 +1,75 @@
+﻿@model RoomsViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/all-rooms-list.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">
+                Danh sách phòng
+                <span id="filteredRoomCount" class="badge bg-primary">(@Model.TotalFilteredRooms phòng)</span>
+            </h1>
+            <div class="card mb-4 filter-card">
+                <div class="card-body">
+                    <form id="filterForm" class="row g-3">
+                        <input type="hidden" name="collaboratorCode" value="@ViewContext.RouteData.Values["collaboratorCode"]" />
+                        <div class="col-md-4 col-lg">
+                            <label for="districtFilter" class="form-label">Quận/Huyện</label>
+                            <select id="districtFilter" class="form-select">
+                                <option value="">Tất cả quận/huyện</option>
+                                @foreach (var district in Model.Districts.Where(d => Model.DistrictRoomCounts.ContainsKey(d.DistrictId)))
+                                {
+                                    <option value="@district.DistrictId">@district.DistrictName (@Model.DistrictRoomCounts[district.DistrictId])</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-lg">
+                            <label for="priceRange" class="form-label">Mức giá</label>
+                            <select name="priceRange" id="priceRange" class="form-select">
+                                <option value="">Tất cả mức giá</option>
+                                <option value="0-3">Dưới 3 triệu (@Model.PriceRangeCounts["0-3"])</option>
+                                <option value="3-5">3 -> 5 triệu (@Model.PriceRangeCounts["3-5"])</option>
+                                <option value="5-8">5 -> 8 triệu (@Model.PriceRangeCounts["5-8"])</option>
+                                <option value="8-99">Trên 8 triệu (@Model.PriceRangeCounts["8-99"])</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-lg">
+                            <label for="roomType" class="form-label">Loại phòng</label>
+                            <select name="roomType" id="roomType" class="form-select">
+                                <option value="">Tất cả loại phòng</option>
+                                @foreach (var type in Model.DistinctRoomTypes)
+                                {
+                                    <option value="@type">@type (@(Model.RoomTypeCounts.ContainsKey(type) ? Model.RoomTypeCounts[type] : 0))</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4 col-lg">
+                            <label for="sortOrder" class="form-label">Sắp xếp theo</label>
+                            <select name="sortOrder" id="sortOrder" class="form-select">
+                                <option value="">Mặc định</option>
+                                <option value="price_asc">Giá từ thấp đến cao</option>
+                                <option value="price_desc">Giá từ cao xuống thấp</option>
+                                <option value="newest">Phòng đăng gần đây</option>
+                                <option value="oldest">Phòng đăng lâu nhất</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="roomsList">
+                @await Html.PartialAsync("_RoomsList", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="scrollTopBtn" class="btn btn-primary"><i class="fas fa-chevron-up"></i></button>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="~/js/collaborator-rooms.js" asp-append-version="true"></script>
+}

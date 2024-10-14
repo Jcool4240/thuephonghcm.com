@@ -1,0 +1,19 @@
+﻿@{
+    var collaboratorCode = Context.Session.GetString("CollaboratorCode");
+}
+
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="Manager" asp-action="Home" asp-route-collaboratorCode="@collaboratorCode">Trang chủ</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="Manager" asp-action="Districts" asp-route-collaboratorCode="@collaboratorCode">Khu vực</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="Manager" asp-action="Rooms" asp-route-collaboratorCode="@collaboratorCode">Phòng</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-controller="Manager" asp-action="About" asp-route-collaboratorCode="@collaboratorCode">Về tôi</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link text-dark" href="javascript:void(0);" onclick="logout()">Đăng xuất</a>
+</li>

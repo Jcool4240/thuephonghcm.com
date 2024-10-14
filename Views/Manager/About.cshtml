@@ -1,0 +1,94 @@
+﻿@model JcoolDevRoom.Models.Collaborator
+@{
+    ViewData["Title"] = "Thông tin cộng tác viên";
+    var collaboratorCode = ViewBag.CollaboratorCode;
+}
+
+<h2>Thông tin cộng tác viên</h2>
+
+<div class="text-right mb-3">
+    <a asp-action="EditAbout" asp-route-collaboratorCode="@Model.CollaboratorCode" class="btn btn-primary">Chỉnh sửa</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Hình ảnh đại diện</h3>
+    </div>
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(Model.AvatarCollaborator))
+        {
+            <img src="@Model.AvatarCollaborator" alt="Avatar" class="img-fluid" style="max-width: 300px;" />
+        }
+        else
+        {
+            <p>Chưa có hình ảnh đại diện.</p>
+        }
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Hình ảnh công việc</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            @if (Model.CollaboratorImages != null && Model.CollaboratorImages.Any())
+            {
+                foreach (var image in Model.CollaboratorImages)
+                {
+                    <div class="col-md-3 mb-3">
+                        <img src="@image.ImageUrl" alt="Hình ảnh công việc" class="img-fluid" />
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col">
+                    <p>Không có hình ảnh công việc nào.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Thông tin chi tiết</h3>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Họ và tên:</dt>
+            <dd class="col-sm-9">@Model.FullnameCollaborator</dd>
+
+            <dt class="col-sm-3">Mã cộng tác viên:</dt>
+            <dd class="col-sm-9">@Model.CollaboratorCode</dd>
+
+            <dt class="col-sm-3">Slogan:</dt>
+            <dd class="col-sm-9">@Model.SloganCollaborator</dd>
+
+            <dt class="col-sm-3">Nhãn:</dt>
+            <dd class="col-sm-9">@Model.LabelCollaborator</dd>
+
+            <dt class="col-sm-3">Dịch vụ:</dt>
+            <dd class="col-sm-9">@Model.ServiceCollaborator</dd>
+
+            <dt class="col-sm-3">Facebook:</dt>
+            <dd class="col-sm-9">@Model.FacebookCollaborator</dd>
+
+            <dt class="col-sm-3">Messenger:</dt>
+            <dd class="col-sm-9">@Model.MessengerCollaborator</dd>
+
+            <dt class="col-sm-3">Zalo:</dt>
+            <dd class="col-sm-9">@Model.ZaloCollaborator</dd>
+
+            <dt class="col-sm-3">Hội nhóm:</dt>
+            <dd class="col-sm-9">@Model.TiktokCollaborator</dd>
+
+            <dt class="col-sm-3">Số điện thoại:</dt>
+            <dd class="col-sm-9">@Model.PhoneNumberCollaborator</dd>
+
+            <dt class="col-sm-3">Cam kết:</dt>
+            <dd class="col-sm-9">@Model.CommitCollaborator</dd>
+        </dl>
+    </div>
+</div>

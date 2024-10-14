@@ -1,0 +1,172 @@
+﻿@model JcoolDevRoom.Models.Room
+
+@{
+    ViewData["Title"] = "Chỉnh sửa phòng";
+    var collaboratorCode = ViewBag.CollaboratorCode;
+}
+
+<link href="~/css/add-room.css" rel="stylesheet" asp-append-version="true">
+
+<div class="container mt-5 mb-5">
+    <h2 class="mb-4 text-center">Chỉnh sửa phòng</h2>
+
+    <form id="editRoomForm" asp-action="EditRoom" asp-route-collaboratorCode="@collaboratorCode" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="RoomId" />
+        <input type="hidden" asp-for="CollaboratorId" />
+
+        <div class="form-section">
+            <h3><i class="fas fa-info-circle"></i> Thông tin cơ bản</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="NameRoom" class="control-label">Tên phòng</label>
+                        <input asp-for="NameRoom" class="form-control" placeholder="Nhập tên phòng" required>
+                        <span asp-validation-for="NameRoom" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="TitleRoom" class="control-label">Tiêu đề</label>
+                        <input asp-for="TitleRoom" class="form-control" placeholder="Nhập tiêu đề phòng" required>
+                        <span asp-validation-for="TitleRoom" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="DescriptionRoom" class="control-label">Mô tả</label>
+                <textarea asp-for="DescriptionRoom" id="summernote" class="form-control" rows="4" placeholder="Nhập mô tả chi tiết về phòng" required></textarea>
+                <span asp-validation-for="DescriptionRoom" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-dollar-sign"></i> Chi tiết phòng</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="PriceRoom" class="control-label">Giá phòng</label>
+                        <div class="input-group">
+                            <input asp-for="PriceRoom" class="form-control price-input" type="text" placeholder="Nhập giá phòng" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">₫</span>
+                            </div>
+                        </div>
+                        <span asp-validation-for="PriceRoom" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="TypeRoom" class="control-label">Loại phòng</label>
+                        <input asp-for="TypeRoom" class="form-control" placeholder="Nhập loại phòng" required>
+                        <span asp-validation-for="TypeRoom" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="CapacityRoom" class="control-label">Sức chứa</label>
+                        <input asp-for="CapacityRoom" class="form-control" type="number" placeholder="Nhập số người tối đa" required min="1">
+                        <span asp-validation-for="CapacityRoom" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="AddressRoom" class="control-label">Địa chỉ</label>
+                <input asp-for="AddressRoom" class="form-control" placeholder="Nhập địa chỉ chi tiết của phòng" required>
+                <span asp-validation-for="AddressRoom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DistrictId" class="control-label">Quận/Huyện</label>
+                <select asp-for="DistrictId" class="form-control select2" asp-items="ViewBag.Districts" required>
+                    <option value="" disabled selected>Chọn Quận/Huyện</option>
+                </select>
+                <span asp-validation-for="DistrictId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-cogs"></i> Thông tin bổ sung</h3>
+            <div class="form-group">
+                <label asp-for="LabelRoom" class="control-label">Nhãn phòng</label>
+                <input asp-for="LabelRoom" class="form-control" placeholder="Nhập nhãn cho phòng (VD: Mới, Giảm giá, ...)">
+                <span asp-validation-for="LabelRoom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NoteRoom" class="control-label">Ghi chú</label>
+                <textarea asp-for="NoteRoom" class="form-control" rows="3" placeholder="Nhập ghi chú bổ sung (nếu có)"></textarea>
+                <span asp-validation-for="NoteRoom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StatusRoom" class="control-label">Trạng thái <small class="text-muted">(Chọn một)</small></label>
+                <select asp-for="StatusRoom" class="form-control select2" required>
+                    <option value="Sẵn phòng">Sẵn phòng</option>
+                    <option value="Đang thương lượng">Đang thương lượng</option>
+                    <option value="Đã hết">Đã hết</option>
+                    <option value="Sắp trống">Sắp trống</option>
+                </select>
+                <span asp-validation-for="StatusRoom" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3><i class="fas fa-images"></i> Hình ảnh</h3>
+            <div class="form-group">
+                <label for="MainImageFile" class="control-label">Ảnh chính</label>
+                <div class="image-upload" id="mainImageUpload">
+                    <label for="MainImageFile">
+                        <i class="fas fa-plus"></i> Chọn ảnh
+                    </label>
+                    <input type="file" id="MainImageFile" name="MainImageFile" accept="image/*">
+                    @if (!string.IsNullOrEmpty(Model.MainImageRoom))
+                    {
+                        <img src="@Model.MainImageRoom" alt="Ảnh chính">
+                        <span class="remove-image">&times;</span>
+                    }
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Ảnh bổ sung (tối đa 5 ảnh)</label>
+                <div id="additionalImagesContainer" class="d-flex flex-wrap">
+                    @{
+                        var existingImages = Model.RoomImages?.ToList() ?? new List<RoomImage>();
+                        for (int i = 0; i < 5; i++)
+                        {
+                            var image = i < existingImages.Count ? existingImages[i] : null;
+                            <div class="image-upload" data-index="@i">
+                                @if (image != null)
+                                {
+                                    <img src="@image.ImageUrl" alt="Ảnh bổ sung">
+                                    <span class="remove-image">&times;</span>
+                                    <input type="hidden" name="ExistingImageIds" value="@image.ImageId" />
+                                }
+                                else
+                                {
+                                    <label for="AdditionalImage@(i)">
+                                        <i class="fas fa-plus"></i> Chọn ảnh
+                                    </label>
+                                }
+                                <input type="file" id="AdditionalImage@(i)" name="AdditionalImages" accept="image/*" style="display: none;">
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-save"></i> Lưu thay đổi
+            </button>
+            <a asp-action="Rooms" asp-route-collaboratorCode="@collaboratorCode" class="btn btn-secondary btn-lg">
+                <i class="fas fa-arrow-left"></i> Quay lại danh sách phòng
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/edit-room.js" asp-append-version="true"></script>
+    <script>
+        var collaboratorCode = '@ViewBag.CollaboratorCode';
+    </script>
+}

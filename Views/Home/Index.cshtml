@@ -1,0 +1,130 @@
+﻿@model List<JcoolDevRoom.Models.Collaborator>
+
+<link rel="stylesheet" href="~/css/home.css" />
+
+<div class="hero-section">
+    <div class="hero-content container text-center">
+        <h1 class="hero-title">thuephonghcm.com</h1>
+        <p class="hero-subtitle">Khám phá không gian sống lý tưởng cùng các cộng tác viên uy tín của chúng tôi</p>
+        <a href="#collaborators" class="hero-btn">Khám phá ngay</a>
+    </div>
+    <div class="wave" id="wave1"></div>
+    <div class="wave" id="wave2"></div>
+</div>
+
+<div class="container mt-5">
+    <div class="stats-overview row">
+        <div class="col-md-6 stats-overview-item">
+            <div class="stats-overview-value">@ViewBag.TotalRooms</div>
+            <div class="stats-overview-label">Tổng số phòng</div>
+        </div>
+        <div class="col-md-6 stats-overview-item">
+            <div class="stats-overview-value">@ViewBag.TotalDistricts</div>
+            <div class="stats-overview-label">Tổng số khu vực</div>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="collaborators">
+    <h2 class="section-title">Cộng tác viên nổi bật</h2>
+
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Tìm kiếm cộng tác viên..." id="searchCollaborator">
+    </div>
+
+    <div class="row" id="collaboratorList">
+        @foreach (var collaborator in Model.OrderByDescending(c => GetPackageRank(c.LabelCollaborator)))
+        {
+            <div class="col-lg-4 col-md-6 mb-4 collaborator-item">
+                <a asp-controller="Collaborator" asp-action="Home" asp-route-collaboratorCode="@collaborator.CollaboratorCode" class="collaborator-card package-@collaborator.LabelCollaborator.Replace(" ", "-")">
+                    <div class="card-header">
+                        <div class="collaborator-avatar-container">
+                            <img src="@collaborator.AvatarCollaborator" alt="@collaborator.FullnameCollaborator" class="collaborator-avatar" />
+                        </div>
+                        @if (collaborator.LabelCollaborator != "Standard")
+                        {
+                            <span class="package-label">
+                                @GetPackageLabel(collaborator.LabelCollaborator)
+                            </span>
+                        }
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="card-title">@collaborator.FullnameCollaborator</h3>
+                        <p class="card-text">@collaborator.SloganCollaborator</p>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-value">@collaborator.Rooms.Count</div>
+                                <div class="stat-label">Phòng</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">@collaborator.Districts.Count</div>
+                                <div class="stat-label">Khu vực</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">@(new Random().Next(50, 100))%</div>
+                                <div class="stat-label">Đánh giá</div>
+                            </div>
+                        </div>
+                        <div class="districts mt-3">
+                            <h4>Khu vực hoạt động:</h4>
+                            <p>
+                                @if (ViewBag.CollaboratorDistricts.ContainsKey(collaborator.CollaboratorId))
+                                {
+                                    @string.Join(", ", ViewBag.CollaboratorDistricts[collaborator.CollaboratorId])
+                                }
+                                else
+                                {
+                                    <span>Chưa có thông tin</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#searchCollaborator').on('keyup', function () {
+                var value = $(this).val().toLowerCase();
+                $('.collaborator-item').filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}
+
+@functions {
+    int GetPackageRank(string package)
+    {
+        switch (package)
+        {
+            case "VIP Ultimate": return 7;
+            case "VIP Plus": return 6;
+            case "VIP": return 5;
+            case "Diamond": return 4;
+            case "Gold": return 3;
+            case "Silver": return 2;
+            case "Standard": return 1;
+            default: return 0;
+        }
+    }
+
+    string GetPackageLabel(string package)
+    {
+        switch (package)
+        {
+            case "VIP Ultimate": return "VIP∞";
+            case "VIP Plus": return "VIP+";
+            case "VIP": return "VIP";
+            case "Diamond": return "Diamond";
+            case "Gold": return "Gold";
+            case "Silver": return "Silver";
+            default: return package;
+        }
+    }
+}

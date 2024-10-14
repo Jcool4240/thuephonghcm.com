@@ -1,0 +1,176 @@
+﻿@model JcoolDevRoom.Models.Collaborator
+
+@{
+    ViewData["Title"] = $"Quản lý - {Model.FullnameCollaborator}";
+}
+
+<style>
+    .dashboard-section {
+        padding: 40px 0;
+        background-color: #f8f9fa;
+    }
+
+    .dashboard-header {
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        color: #fff;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+
+    .dashboard-title {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.8;
+    }
+
+    .info-card, .stat-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .info-card:hover, .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .info-card h3, .stat-card h3 {
+            color: #4e54c8;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+    .info-item {
+        margin-bottom: 10px;
+    }
+
+    .info-label {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #4e54c8;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #555;
+        font-size: 1rem;
+    }
+
+    .action-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        margin: 10px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #4e54c8;
+        color: #fff;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        color: #fff;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .action-icon {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Xin chào, @Model.FullnameCollaborator!</h1>
+            <p class="dashboard-subtitle">Chào mừng bạn đến với trang quản lý của JcoolDevRoom</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-card">
+                    <h3>Thông tin cá nhân</h3>
+                    <div class="info-item">
+                        <span class="info-label">Mã cộng tác viên:</span> @Model.CollaboratorCode
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Họ tên:</span> @Model.FullnameCollaborator
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Số điện thoại:</span> @Model.PhoneNumberCollaborator
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Slogan:</span> @Model.SloganCollaborator
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="stat-card">
+                            <h3>Phòng</h3>
+                            <div class="stat-value">@ViewBag.RoomCount</div>
+                            <div class="stat-label">Phòng đang quản lý</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="stat-card">
+                            <h3>Khu vực</h3>
+                            <div class="stat-value">@ViewBag.DistrictCount</div>
+                            <div class="stat-label">Khu vực hoạt động</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <a asp-action="About" asp-route-collaboratorCode="@Model.CollaboratorCode" class="action-btn btn-info w-100">
+                    <i class="fas fa-user action-icon"></i>Thông tin cá nhân
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a asp-action="Rooms" asp-route-collaboratorCode="@Model.CollaboratorCode" class="action-btn btn-primary w-100">
+                    <i class="fas fa-door-open action-icon"></i>Quản lý phòng
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a asp-action="Districts" asp-route-collaboratorCode="@Model.CollaboratorCode" class="action-btn btn-secondary w-100">
+                    <i class="fas fa-map-marker-alt action-icon"></i>Quản lý khu vực
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+}

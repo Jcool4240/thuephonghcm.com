@@ -1,0 +1,131 @@
+﻿@model JcoolDevRoom.Models.Collaborator
+@{
+    ViewData["Title"] = "Chỉnh sửa thông tin cộng tác viên";
+    var collaboratorCode = ViewBag.CollaboratorCode;
+}
+
+<h2>Chỉnh sửa thông tin cộng tác viên</h2>
+
+<form id="editCollaboratorForm" asp-action="EditAbout" asp-route-collaboratorCode="@Model.CollaboratorCode" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="CollaboratorId" />
+
+    <div class="form-group">
+        <label asp-for="FullnameCollaborator" class="control-label">Họ và tên</label>
+        <input asp-for="FullnameCollaborator" class="form-control" required />
+        <span asp-validation-for="FullnameCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CollaboratorCode" class="control-label">Mã cộng tác viên</label>
+        <input asp-for="CollaboratorCode" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SloganCollaborator" class="control-label">Slogan</label>
+        <input asp-for="SloganCollaborator" class="form-control" />
+        <span asp-validation-for="SloganCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LabelCollaborator" class="control-label">Nhãn</label>
+        <input asp-for="LabelCollaborator" class="form-control" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ServiceCollaborator" class="control-label">Dịch vụ</label>
+        <input asp-for="ServiceCollaborator" class="form-control" />
+        <span asp-validation-for="ServiceCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FacebookCollaborator" class="control-label">Facebook</label>
+        <input asp-for="FacebookCollaborator" class="form-control" />
+        <span asp-validation-for="FacebookCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="MessengerCollaborator" class="control-label">Messenger</label>
+        <input asp-for="MessengerCollaborator" class="form-control" />
+        <span asp-validation-for="MessengerCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ZaloCollaborator" class="control-label">Zalo</label>
+        <input asp-for="ZaloCollaborator" class="form-control" />
+        <span asp-validation-for="ZaloCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TiktokCollaborator" class="control-label">Hội nhóm</label>
+        <input asp-for="TiktokCollaborator" class="form-control" />
+        <span asp-validation-for="TiktokCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PhoneNumberCollaborator" class="control-label">Số điện thoại</label>
+        <input asp-for="PhoneNumberCollaborator" class="form-control" />
+        <span asp-validation-for="PhoneNumberCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CommitCollaborator" class="control-label">Cam kết</label>
+        <textarea asp-for="CommitCollaborator" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="CommitCollaborator" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="AvatarFile" class="control-label">Hình ảnh đại diện</label>
+        <div class="image-upload" id="avatarUpload">
+            <label for="AvatarFile">
+                <i class="fas fa-plus"></i> Chọn ảnh
+            </label>
+            <input type="file" id="AvatarFile" name="AvatarFile" accept="image/*">
+            @if (!string.IsNullOrEmpty(Model.AvatarCollaborator))
+            {
+                <img src="@Model.AvatarCollaborator" alt="Ảnh đại diện">
+                <span class="remove-image">&times;</span>
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Hình ảnh công việc (tối đa 5 ảnh)</label>
+        <div id="additionalImagesContainer" class="d-flex flex-wrap">
+            @{
+                var existingImages = Model.CollaboratorImages?.ToList() ?? new List<CollaboratorImage>();
+                for (int i = 0; i < 5; i++)
+                {
+                    var image = i < existingImages.Count ? existingImages[i] : null;
+                    <div class="image-upload" data-index="@i">
+                        @if (image != null)
+                        {
+                            <img src="@image.ImageUrl" alt="Hình ảnh công việc">
+                            <span class="remove-image">&times;</span>
+                            <input type="hidden" name="ExistingImageIds" value="@image.ImageId" />
+                        }
+                        else
+                        {
+                            <label for="AdditionalImage@(i)">
+                                <i class="fas fa-plus"></i> Chọn ảnh
+                            </label>
+                        }
+                        <input type="file" id="AdditionalImage@(i)" name="AdditionalImages" accept="image/*" style="display: none;">
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Lưu thay đổi" class="btn btn-primary" />
+        <a asp-action="About" asp-route-collaboratorCode="@Model.CollaboratorCode" class="btn btn-secondary">Quay lại</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/js/edit-collaborator.js" asp-append-version="true"></script>
+    <script>
+        var collaboratorCode = '@ViewBag.CollaboratorCode';
+    </script>
+}

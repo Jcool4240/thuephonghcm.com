@@ -1,0 +1,105 @@
+﻿@model JcoolDevRoom.Models.Collaborator
+
+<head>
+    <meta name="description" content="@Model.SloganCollaborator">
+    <meta name="keywords" content="cộng tác viên, @Model.FullnameCollaborator, @Model.ServiceCollaborator">
+    <title>@Model.FullnameCollaborator - Cộng tác viên</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="~/css/collaborator-home.css">
+</head>
+
+<div class="collaborator-home">
+    <section class="hero-section package-@Model.LabelCollaborator.Replace(" ", "-")">
+        <div class="hero-content">
+            <div class="avatar-container">
+                <img src="@Model.AvatarCollaborator" alt="@Model.FullnameCollaborator" class="avatar">
+                <span class="label label-@Model.LabelCollaborator.Replace(" ", "-")">
+                    <span class="label-text">@Model.LabelCollaborator</span>
+                </span>
+            </div>
+            <div class="hero-text">
+                <h1 class="collaborator-name">@Model.FullnameCollaborator</h1>
+                <p class="slogan">@Model.SloganCollaborator</p>
+                <div class="service">@Model.ServiceCollaborator</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="main-content">
+        <div class="left-column">
+            <section class="section district-section">
+                <h2 class="section-title">Khu vực hoạt động</h2>
+                <div class="district-list">
+                    @if (Model.Districts != null && Model.Districts.Any())
+                    {
+                        @foreach (var district in Model.Districts)
+                        {
+                            <a asp-action="Rooms" asp-route-collaboratorCode="@Model.CollaboratorCode" asp-route-districtId="@district.DistrictId" class="district-item">
+                                <i class="fas fa-map-pin"></i>
+                                <span class="district-name">@district.DistrictName</span>
+                                <span class="room-count">@ViewBag.DistrictRoomCounts[district.DistrictId] phòng</span>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <p>Chưa có thông tin về khu vực hoạt động.</p>
+                    }
+                </div>
+                <a asp-action="Rooms" asp-route-collaboratorCode="@Model.CollaboratorCode" class="btn btn-primary btn-block mt-3">Xem tất cả phòng</a>
+            </section>
+
+            <section class="section commit-section">
+                <h2 class="section-title">Cam kết của chúng tôi</h2>
+                <p class="commit-text">@Model.CommitCollaborator</p>
+                <a asp-action="About" asp-route-collaboratorCode="@Model.CollaboratorCode" class="btn btn-secondary btn-block mt-3">Tìm hiểu thêm về chúng tôi</a>
+            </section>
+        </div>
+
+        <div class="right-column">
+            <section class="section contact-section">
+                <h2 class="section-title">Thông tin liên hệ</h2>
+                @if (!string.IsNullOrEmpty(Model.PhoneNumberCollaborator))
+                {
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                        <a href="tel:@Model.PhoneNumberCollaborator" aria-label="Gọi điện thoại">@Model.PhoneNumberCollaborator</a>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.FacebookCollaborator))
+                {
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fab fa-facebook"></i></div>
+                        <a href="@Model.FacebookCollaborator" target="_blank" rel="noopener noreferrer">Facebook</a>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.MessengerCollaborator))
+                {
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fab fa-facebook-messenger"></i></div>
+                        <a href="@Model.MessengerCollaborator" target="_blank" rel="noopener noreferrer">Messenger</a>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.ZaloCollaborator))
+                {
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <img src="/images/zalo-icon.png" alt="Zalo" width="24" height="24">
+                        </div>
+                        <a href="@Model.ZaloCollaborator" target="_blank" rel="noopener noreferrer">Zalo</a>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.TiktokCollaborator))
+                {
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-users"></i></div>
+                        <a href="@Model.TiktokCollaborator" target="_blank" rel="noopener noreferrer">Nhóm thảo luận</a>
+                    </div>
+                }
+            </section>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/collaborator-home.js"></script>

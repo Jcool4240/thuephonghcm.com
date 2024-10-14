@@ -1,0 +1,99 @@
+﻿@model RoomsViewModel
+
+<div id="totalFilteredRooms" data-total="@Model.TotalFilteredRooms" style="display: none;"></div>
+
+@if (Model.Rooms.Any())
+{
+    <div class="all-rooms-grid hide-rooms">
+        @foreach (var room in Model.Rooms)
+        {
+            <div class="all-room-card" data-aos="fade-up">
+                <a href="@Url.Action("RoomDetails", "Collaborator", new { collaboratorCode = room.Collaborator.CollaboratorCode, id = room.RoomId })" class="text-decoration-none">
+                    <div class="card-img-wrapper">
+                        <img data-src="@room.MainImageRoom" class="card-img-top lazy" alt="@room.NameRoom">
+                        @if (!string.IsNullOrEmpty(room.LabelRoom))
+                        {
+                            <div class="room-label">
+                                <span class="label-icon"><i class="fas fa-crown"></i></span>
+                                <span class="label-text">@room.LabelRoom</span>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(room.StatusRoom))
+                        {
+                            <div class="room-status @GetStatusClass(room.StatusRoom)">
+                                <span class="status-icon"></span>
+                                @room.StatusRoom
+                            </div>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title" title="@room.NameRoom">@room.NameRoom</h5>
+                        <p class="price">@String.Format("{0:N0}", room.PriceRoom) VNĐ/tháng</p>
+                        <p class="address" title="@room.AddressRoom"><i class="fas fa-map-marker-alt mr-1"></i>@room.AddressRoom</p>
+                        <p class="collaborator"><i class="fas fa-user-tie mr-1"></i>@room.Collaborator.FullnameCollaborator</p>
+                        <div class="features">
+                            <span class="feature-item"><i class="fas fa-user feature-icon"></i>@room.CapacityRoom người</span>
+                            <span class="feature-item"><i class="fas fa-home feature-icon"></i>@room.TypeRoom</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    @if (Model.TotalFilteredRooms > Model.PageSize)
+    {
+        <nav aria-label="Page navigation" class="mt-4" data-aos="fade-up">
+            <ul class="pagination justify-content-center">
+                @{
+                    int totalPages = (int)Math.Ceiling((double)Model.TotalFilteredRooms / Model.PageSize);
+                    int startPage = Math.Max(1, Model.CurrentPage - 2);
+                    int endPage = Math.Min(totalPages, Model.CurrentPage + 2);
+                }
+
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="1">&laquo;</a>
+                    </li>
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="#" data-page="@i">@i</a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="#" data-page="@totalPages">&raquo;</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}
+else
+{
+    <div class="no-results" data-aos="fade-up">
+        <i class="fas fa-search fa-3x mb-3"></i>
+        <p>Không tìm thấy phòng nào phù hợp với tiêu chí tìm kiếm.</p>
+        <p>Vui lòng thử lại với các tiêu chí khác.</p>
+    </div>
+}
+
+@functions {
+    string GetStatusClass(string status)
+    {
+        return status.ToLower() switch
+        {
+            "sẵn phòng" => "available",
+            "đang thương lượng" => "pending",
+            "đã hết" => "unavailable",
+            "sắp trống" => "soon-available",
+            _ => status.ToLower()
+        };
+    }
+}

@@ -1,0 +1,390 @@
+﻿@model List<DistrictManagerModel>
+@{
+    var collaboratorCode = ViewContext.RouteData.Values["collaboratorCode"]?.ToString() ?? string.Empty;
+    ViewData["Title"] = "Quản lý khu vực hoạt động";
+}
+
+@if (Model == null)
+{
+    <p>Không có dữ liệu khu vực.</p>
+    return;
+}
+
+<style>
+    :root {
+        --primary-color: #4e54c8;
+        --secondary-color: #8f94fb;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
+        --light-color: #f8f9fa;
+        --dark-color: #343a40;
+    }
+
+    .districts-section {
+        padding: 40px 0;
+        background-color: var(--light-color);
+    }
+
+    .section-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: #fff;
+        padding: 40px;
+        border-radius: 15px;
+        margin-bottom: 40px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .dashboard {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .dashboard-item {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .dashboard-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .dashboard-label {
+        font-size: 1rem;
+        color: var(--dark-color);
+    }
+
+    .control-panel {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .filter-btn {
+        margin-right: 10px;
+        margin-bottom: 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 50px;
+        background-color: #e9ecef;
+        color: var(--dark-color);
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .filter-btn.active {
+        background-color: var(--primary-color);
+        color: #fff;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 12px 20px;
+        border: 2px solid #ced4da;
+        border-radius: 50px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(78, 84, 200, 0.25);
+    }
+
+    .district-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        padding: 25px;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .district-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    .district-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: var(--dark-color);
+    }
+
+    .toggle-district {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 50px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-active {
+        background-color: var(--success-color);
+        color: #fff;
+    }
+
+    .btn-inactive {
+        background-color: var(--danger-color);
+        color: #fff;
+    }
+
+    .toggle-district:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+    }
+
+    .district-status {
+        font-size: 0.9rem;
+        margin-top: 15px;
+        text-align: center;
+        color: var(--dark-color);
+    }
+
+    .status-icon {
+        font-size: 4rem;
+        position: absolute;
+        bottom: -15px;
+        right: -15px;
+        opacity: 0.1;
+        transition: all 0.3s ease;
+    }
+
+    .district-card:hover .status-icon {
+        transform: scale(1.2) rotate(15deg);
+        opacity: 0.2;
+    }
+
+    .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: var(--dark-color);
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+
+<div class="districts-section">
+    <div class="container">
+        <div class="section-header">
+            <h1 class="section-title">Quản lý khu vực hoạt động</h1>
+            <p class="section-subtitle">Tùy chỉnh và quản lý các khu vực bạn muốn hoạt động</p>
+        </div>
+
+        <div class="control-panel">
+            <div class="row">
+                <div class="col-md-8">
+                    <button class="filter-btn active" data-filter="all">
+                        Tất cả (<span id="all-count">@Model.Count</span>)
+                    </button>
+                    <button class="filter-btn" data-filter="active">
+                        Đang hoạt động (<span id="active-count">@Model.Count(d => d.IsActive)</span>)
+                    </button>
+                    <button class="filter-btn" data-filter="inactive">
+                        Không hoạt động (<span id="inactive-count">@Model.Count(d => !d.IsActive)</span>)
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="search-input" placeholder="Tìm kiếm khu vực...">
+                </div>
+            </div>
+        </div>
+
+        <div class="row district-list">
+            @foreach (var district in Model)
+            {
+                <div class="col-md-4 col-sm-6 district-item" data-status="@(district.IsActive ? "active" : "inactive")">
+                    <div class="district-card">
+                        <div class="district-name">@district.DistrictName</div>
+                        <button class="toggle-district @(district.IsActive ? "btn-active" : "btn-inactive")"
+                                data-district-id="@district.DistrictId"
+                                data-collaborator-code="@collaboratorCode">
+                            @(district.IsActive ? "Đang hoạt động" : "Không hoạt động")
+                        </button>
+                        <div class="district-status">
+                            @(district.IsActive ? "Bạn đang hoạt động tại khu vực này" : "Bạn chưa hoạt động tại khu vực này")
+                        </div>
+                        <i class="status-icon fas @(district.IsActive ? "fa-check-circle" : "fa-times-circle")"></i>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="loading" style="display: none;">
+    <div class="loading-spinner"></div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.toggle-district').click(function () {
+                var button = $(this);
+                var districtId = button.data('district-id');
+                var collaboratorCode = button.data('collaborator-code');
+
+                $('.loading').show();
+
+                $.ajax({
+                    url: '/' + collaboratorCode + '/manager/districts/toggle',
+                    type: 'POST',
+                    data: { districtId: districtId },
+                    success: function (result) {
+                        if (result.success) {
+                            updateDistrictStatus(button, result.isActive);
+                            updateDashboard();
+                        }
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra. Vui lòng thử lại sau.');
+                    },
+                    complete: function() {
+                        $('.loading').hide();
+                    }
+                });
+            });
+
+            function updateDistrictStatus(button, isActive) {
+                var card = button.closest('.district-card');
+                var statusText = card.find('.district-status');
+                var statusIcon = card.find('.status-icon');
+
+                if (isActive) {
+                    button.removeClass('btn-inactive').addClass('btn-active');
+                    button.text('Đang hoạt động');
+                    statusText.text('Bạn đang hoạt động tại khu vực này');
+                    statusIcon.removeClass('fa-times-circle').addClass('fa-check-circle');
+                    card.closest('.district-item').attr('data-status', 'active');
+                } else {
+                    button.removeClass('btn-active').addClass('btn-inactive');
+                    button.text('Không hoạt động');
+                    statusText.text('Bạn chưa hoạt động tại khu vực này');
+                    statusIcon.removeClass('fa-check-circle').addClass('fa-times-circle');
+                    card.closest('.district-item').attr('data-status', 'inactive');
+                }
+
+                card.addClass('highlight');
+                setTimeout(function() {
+                    card.removeClass('highlight');
+                }, 300);
+            }
+
+            function updateDashboard() {
+                var totalDistricts = $('.district-item').length;
+                var activeDistricts = $('.district-item[data-status="active"]').length;
+                var inactiveDistricts = totalDistricts - activeDistricts;
+
+                $('#total-districts').text(totalDistricts);
+                $('#active-districts').text(activeDistricts);
+                $('#inactive-districts').text(inactiveDistricts);
+
+                $('#all-count').text(totalDistricts);
+                $('#active-count').text(activeDistricts);
+                $('#inactive-count').text(inactiveDistricts);
+
+                $('.dashboard-value').addClass('highlight');
+                setTimeout(function() {
+                    $('.dashboard-value').removeClass('highlight');
+                }, 300);
+            }
+
+            $('.filter-btn').click(function() {
+                $('.filter-btn').removeClass('active');
+                $(this).addClass('active');
+                var filter = $(this).data('filter');
+                if (filter === 'all') {
+                    $('.district-item').show();
+                } else {
+                    $('.district-item').hide();
+                    $('.district-item[data-status="' + filter + '"]').show();
+                }
+            });
+
+            $('.search-input').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('.district-item').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            // Thêm tooltip
+            $('.dashboard-item').append('<span class="tooltiptext">Cập nhật theo thời gian thực</span>');
+            $('.dashboard-item').addClass('tooltip');
+        });
+    </script>
+}

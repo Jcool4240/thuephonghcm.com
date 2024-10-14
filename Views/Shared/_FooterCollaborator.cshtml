@@ -1,0 +1,32 @@
+﻿@{
+    var collaboratorCode = ViewContext.RouteData.Values["collaboratorCode"]?.ToString();
+}
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Tôn chỉ của chúng tôi</h5>
+                <ul>
+                    <li>Mang lại sự hài lòng cho quý khách hàng.</li>
+                    <li>Đặt lợi ích của khách hàng lên hàng đầu.</li>
+                    <li>Đảm bảo đúng hình đúng giá cam kết rõ ràng!</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Liên kết nhanh</h5>
+                <ul class="list-unstyled">
+                    <li><a asp-controller="Collaborator" asp-action="Home" asp-route-collaboratorCode="@collaboratorCode">Trang chủ</a></li>
+                    <li><a asp-controller="Collaborator" asp-action="Rooms" asp-route-collaboratorCode="@collaboratorCode">Danh sách phòng</a></li>
+                    <li><a asp-controller="Collaborator" asp-action="About" asp-route-collaboratorCode="@collaboratorCode">Giới thiệu</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <p>&copy; 2024 - <a href="/cong-tac-vien-cho-thue-phong">thuephonghcm.com</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
